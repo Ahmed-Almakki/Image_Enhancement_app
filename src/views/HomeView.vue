@@ -13,10 +13,15 @@
         </div>
       </div>
     </div>
-    <div class="second">
-      <p>
-    Transform your ordinary images into stunning, high-resolution masterpieces with a single click.
-  </p>
+    <div class="second d-flex flex-column align-items-center">
+      <div>
+        <p>
+          Transform your ordinary images into stunning, high-resolution masterpieces with a single click.
+        </p>
+      </div>
+      <div>
+        <button button type="button" class="btn btn-outline-warning btn-lg">Upload Image</button>
+      </div>
     </div>
   </div>
 </template>
@@ -76,7 +81,7 @@ export default {
     position: absolute;
     width: 50%;
     height: 40vh;
-    top: 60%;
+    top: 65%;
     left: 50%;
     transform: translate(-50%, -50%);
   }
@@ -87,4 +92,5 @@ export default {
     text-align: center;
     padding: 1rem
   }
+
 </style>
