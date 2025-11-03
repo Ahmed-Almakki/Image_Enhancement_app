@@ -7,19 +7,26 @@ const routes = [
     name: 'home',
     component: HomeView
   },
-  {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  }
 ]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
-
+router.beforeEach((routeTo, routeFrom, next) => {
+  const publicPages = ["/login", "/register", "/forgot-password"];
+  // const authpage = !publicPages.includes(routeTo.path);
+  // const loggeduser = localStorage.currentUser;
+  // console.log(loggeduser);
+  // console.log("authpage", authpage);
+  // if (authpage && !loggeduser) 
+  // if (authpage) {
+  //   router.push("/login");
+  // } else {
+  //   console.log("Hello");
+  //   next();
+  // }
+  console.log("first  ",publicPages, "\nrouteTo",routeTo.path, "\nrouteFrom",routeFrom.path, "\nrouteto",routeTo);
+  next();
+});
 export default router
