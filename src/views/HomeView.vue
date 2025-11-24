@@ -4,14 +4,9 @@
       <div class="logo ps-3 ">
         <h1>Enhanca-viosa</h1>
       </div>
-      <div class="d-flex gap-3 pe-3">
-        <div :class="{'parent-active': $route.path === '/'}">
-          <router-link to="/" class="navb_child"><span>Home</span></router-link>
+        <div :class="{'parent-active': $route.path === '/login'}" class="boarder border-5 ms-5 log">
+          <router-link to="/login" class="navb_child"><span>Login</span></router-link>
         </div>
-        <div :class="{'parent-active': $route.path === '/about'}">
-          <router-link to="/about" class="navb_child"><span>About</span></router-link>
-        </div>
-      </div>
     </div>
     <div class="second d-flex flex-column align-items-center">
       <div>
@@ -30,6 +25,7 @@
 export default {
   name: 'HomeView',
 }
+console.log('window', window  )
 </script>
 <style scoped>
   .back {
@@ -52,7 +48,7 @@ export default {
     z-index: 0;
   }
   .first {
-    width: 80%;
+    width: 90%;
     margin:auto;
     height: 20%;
     position: sticky;
@@ -91,6 +87,10 @@ export default {
     line-height: 1.6;
     text-align: center;
     padding: 1rem
+  }
+
+  .log {
+    border-color: #FFD700;
   }
 
 </style>
