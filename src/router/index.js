@@ -33,18 +33,17 @@ const router = createRouter({
   routes
 })
 router.beforeEach((routeTo, routeFrom, next) => {
-  // const publicPages = ["/login", "/register", "/forgot-password"];
-  // const authpage = !publicPages.includes(routeTo.path);
-  // const loggeduser = localStorage.currentUser;
-  // console.log(loggeduser);
-  // console.log("authpage", authpage);
-  // if (authpage && !loggeduser) 
-  // if (authpage) {
-  //   router.push("/login");
-  // } else {
-  //   console.log("Hello");
-  //   next();
-  // }
+  const publicPages = ["/login", "/register", "/forgot-password"];
+  const authpage = !publicPages.includes(routeTo.path);
+  const loggeduser = localStorage.currentUser ? true : false;
+  if (authpage && !loggeduser) 
+  if (authpage) {
+    router.push("/login");
+  } 
+  else {
+    console.log("Hello");
+    next();
+  }
   // console.log("first  ",publicPages, "\nrouteTo",routeTo.path, "\nrouteFrom",routeFrom.path, "\nrouteto",routeTo);
   next();
 });

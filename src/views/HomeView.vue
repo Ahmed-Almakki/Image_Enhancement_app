@@ -5,7 +5,11 @@
         <h1>Enhanca-viosa</h1>
       </div>
         <div :class="{'parent-active': $route.path === '/login'}" class="boarder border-5 ms-5 log">
-          <router-link to="/login" class="navb_child"><span>Login</span></router-link>
+          <router-link v-if="!currentUser" to="/login" class="navb_child"><span>Login</span></router-link>
+          <div v-else class="d-flex justify-content-between gap-5 align-self-lg-start">
+            <span class="fs-4">Welcome {{ currentUser.first_name }}</span>
+            <i class="bi bi-box-arrow-right fs-3" style="cursor: pointer;"></i>
+          </div>
         </div>
     </div>
     <div class="second d-flex flex-column align-items-center">
@@ -24,8 +28,12 @@
 <script>
 export default {
   name: 'HomeView',
+  computed: {
+    currentUser() {
+      return this.$store.state.currentUser
+    }
+  },
 }
-console.log('window', window  )
 </script>
 <style scoped>
   .back {
@@ -83,7 +91,7 @@ console.log('window', window  )
   }
 
   .second p {
-    font-size: clamp(2rem, 3vw, 1.5rem);
+    font-size: clamp(3rem, 3vw, 1.5rem);
     line-height: 1.6;
     text-align: center;
     padding: 1rem

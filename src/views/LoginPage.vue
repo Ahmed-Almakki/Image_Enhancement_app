@@ -63,7 +63,10 @@ export default {
     Login() {
       this.$http.post('v1/login', this.cred).then((res) => {
         console.log('res this ', res.data)
+        this.$store.dispatch('login', res.data.data)
       })
+      .catch((e) => console.log('the error is ', e))
+      .finally(() => this.$router.push('/'))
     },
     Oauth() {
       this.$http.get('v2/state').then((res) => {
