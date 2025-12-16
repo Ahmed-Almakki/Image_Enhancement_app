@@ -33,7 +33,7 @@ const router = createRouter({
   routes
 })
 router.beforeEach((routeTo, routeFrom, next) => {
-  const publicPages = ["/login", "/register", "/forgot-password"];
+  // const publicPages = ["/login", "/register", "/forgot-password"];
   // const authpage = !publicPages.includes(routeTo.path);
   // const loggeduser = localStorage.currentUser;
   // console.log(loggeduser);
@@ -45,7 +45,7 @@ router.beforeEach((routeTo, routeFrom, next) => {
   //   console.log("Hello");
   //   next();
   // }
-  console.log("first  ",publicPages, "\nrouteTo",routeTo.path, "\nrouteFrom",routeFrom.path, "\nrouteto",routeTo);
+  // console.log("first  ",publicPages, "\nrouteTo",routeTo.path, "\nrouteFrom",routeFrom.path, "\nrouteto",routeTo);
   next();
 });
 export default router

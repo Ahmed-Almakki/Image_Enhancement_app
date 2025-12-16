@@ -61,14 +61,24 @@ export default {
   },
   methods: {
     Login() {
-      console.log('the credintail', this.cred)
+      this.$http.post('v1/login', this.cred).then((res) => {
+        console.log('res this ', res.data)
+      })
     },
     Oauth() {
       this.$http.get('v2/state').then((res) => {
         console.log('ressd', res.data)
         window.location.href = res.data.data
       }).catch((error) => console.log('there is some error', error))
+    },
+    getToken() {
+      this.$http.get('get_token/').then(() => {
+        console.log('done done done')
+      })
     }
+  },
+  mounted() {
+    this.getToken();
   }
 }
 </script>
