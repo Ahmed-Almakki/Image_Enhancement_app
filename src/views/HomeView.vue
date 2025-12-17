@@ -18,8 +18,15 @@
           Transform your ordinary images into stunning, high-resolution masterpieces with a single click.
         </p>
       </div>
+      <input
+      ref="fileInput"
+      type="file"
+      accept="image/*"
+      class="d-none"
+      @change="handleFile"
+    />
       <div>
-        <button button type="button" class="btn btn-outline-warning btn-lg">Upload Image</button>
+        <button @click="openFilePicker" type="button" class="btn btn-outline-warning btn-lg">Upload Image</button>
       </div>
     </div>
   </div>
@@ -28,11 +35,34 @@
 <script>
 export default {
   name: 'HomeView',
+  data(){
+    return {
+      file: null,
+      fileName: ""
+    }
+  },
   computed: {
     currentUser() {
       return this.$store.state.currentUser
     }
   },
+  methods: {
+    openFilePicker() {
+      this.$refs.fileInput.click()
+    },
+
+    handleFile(event) {
+      const file = event.target.files[0]
+      if (!file) return
+
+      this.file = file
+      this.fileName = file.name
+
+      this.$Upload('v1/upload', {title: this.fileName, file: this.file}).then((res) => {
+        console.log('response fromt dan', res)
+      })
+    }
+  }
 }
 </script>
 <style scoped>
