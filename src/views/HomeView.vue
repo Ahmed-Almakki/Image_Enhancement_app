@@ -8,7 +8,7 @@
           <router-link v-if="!currentUser" to="/login" class="navb_child"><span>Login</span></router-link>
           <div v-else class="d-flex justify-content-between gap-5 align-self-lg-start">
             <span class="fs-4">Welcome {{ currentUser.first_name }}</span>
-            <i class="bi bi-box-arrow-right fs-3" style="cursor: pointer;"></i>
+            <i @click="Logout()" class="bi bi-box-arrow-right fs-3" style="cursor: pointer;"></i>
           </div>
         </div>
     </div>
@@ -48,7 +48,11 @@ export default {
   },
   methods: {
     openFilePicker() {
-      this.$refs.fileInput.click()
+      if(this.$store.state.currentUser) {
+        this.$refs.fileInput.click()
+      } else {
+        this.$router.push('/login')
+      }
     },
 
     handleFile(event) {
@@ -60,6 +64,13 @@ export default {
 
       this.$Upload('v1/upload', {title: this.fileName, file: this.file}).then((res) => {
         console.log('response fromt dan', res)
+      })
+    },
+    Logout(){
+      this.$http.post('logout/').then((res) => {
+        this.$store.dispatch('logout')
+        console.log('successfully loged out', res.data)
+        this.$router.push('/login')
       })
     }
   }
