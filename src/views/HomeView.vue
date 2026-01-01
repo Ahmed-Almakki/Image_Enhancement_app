@@ -70,7 +70,7 @@ export default {
       this.$http.post('logout/').then((res) => {
         this.$store.dispatch('logout')
         console.log('successfully loged out', res.data)
-        this.$router.push('/login')
+        this.$router.push('/')
       })
     }
   }
