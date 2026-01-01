@@ -9,9 +9,12 @@
 export default {
 
     mounted() {
-        this.$http.get('get_token').then((res) => {
+        this.$http.get('get_token/').then((res) => {
             console.log('cookies info', res.cookie)
-            this.$router.push('/')
+            this.$http.get('v2/current_user/').then((res) =>{
+                console.log('yes yes yes')
+                this.$store.dispatch('login', res.data.data)
+                this.$router.push('/')})
         })
     }
     

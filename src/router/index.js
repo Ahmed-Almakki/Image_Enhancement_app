@@ -33,12 +33,13 @@ const router = createRouter({
   routes
 })
 router.beforeEach((routeTo, routeFrom, next) => {
-  const publicPages = ["/login", "/register", "/forgot-password"];
+  const publicPages = ["/login", "/register", "/forgot-password", "/oauth"];
   const authpage = !publicPages.includes(routeTo.path);
   const loggeduser = localStorage.currentUser ? true : false;
+  console.log('didn fubd the ', loggeduser)
   if (authpage && !loggeduser) 
   if (authpage) {
-    router.push("/login");
+    // router.push("/login");
   } 
   else {
     console.log("Hello");
