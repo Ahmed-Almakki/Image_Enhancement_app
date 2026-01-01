@@ -39,7 +39,7 @@ router.beforeEach((routeTo, routeFrom, next) => {
   console.log('didn fubd the ', loggeduser)
   if (authpage && !loggeduser) 
   if (authpage) {
-    // router.push("/login");
+    router.push("/login");
   } 
   else {
     console.log("Hello");

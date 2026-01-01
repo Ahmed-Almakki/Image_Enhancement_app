@@ -5,7 +5,7 @@
             <div class="log_hdr text-center">
               <h2>Login</h2>
             </div>
-            <div class="log_bdy mt-5">
+            <div class="mt-5">
               <form @submit.prevent="Login()">
                 <div class="form-floating mb-5">
                   <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" v-model="cred.email" required>
@@ -25,7 +25,7 @@
                   </div>
                   <a href="#" class="text-decoration-none fs-5">Forget password?</a>
                 </div>
-                <!-- SignUp-->
+                <!-- SignIn-->
                 <div class="d-grid col-12 mb-5">
                   <button class="btn btn-outline-primary btn-lg" type="submit">Sign In</button>
                 </div>
@@ -45,7 +45,7 @@
                 </button>
               </div>
               <div class="text-center fs-5">
-                <sapn>D'not have an account? </sapn><a class="text-decoration-none pointer-event" href="#">SignUp</a>
+                <sapn>D'not have an account? </sapn><router-link to="/register" class="text-decoration-none pointer-event" href="#">SignUp</router-link>
               </div>
             </div>
           </div>
