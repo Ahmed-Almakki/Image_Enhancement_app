@@ -80,7 +80,8 @@ export default {
     Register() {
       this.$http.post('v1/register', this.form).then((res) => {
         console.log('register response', res.data)
-      })
+        this.$router.push('/activate')
+      }).catch((error) => console.log('the error is because of the ', error))
     }
   },
     

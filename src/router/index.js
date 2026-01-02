@@ -3,6 +3,8 @@ import HomeView from '../views/HomeView.vue'
 import LoginPage from '@/views/LoginPage.vue'
 import RegisterPage from '@/views/RegisterPage.vue'
 import OAuthPage from '@/views/OAuthPage.vue'
+import ActivateAccount from '@/views/ActivateAccount.vue'
+import ActivatePage from '@/views/ActivatePage.vue'
 
 
 const routes = [
@@ -25,6 +27,16 @@ const routes = [
     path: '/oauth',
     name: 'oauth',
     component: OAuthPage,
+  },
+  {
+    path: '/activate',
+    name: 'activate',
+    component: ActivateAccount,
+  },
+  {
+    path: '/active-page',
+    name: 'activatePage',
+    component: ActivatePage,
   }
 ]
 
@@ -33,7 +45,7 @@ const router = createRouter({
   routes
 })
 router.beforeEach((routeTo, routeFrom, next) => {
-  const publicPages = ["/login", "/register", "/forgot-password", "/oauth", '/home'];
+  const publicPages = ["/login", "/register", "/forgot-password", "/oauth", '/activate', '/activate-page'];
   const authpage = !publicPages.includes(routeTo.path);
   const loggeduser = localStorage.currentUser ? true : false;
   console.log('didn fubd the ', loggeduser)
