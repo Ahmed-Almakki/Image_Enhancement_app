@@ -10,24 +10,24 @@
               <form @submit.prevent="Register()">
 
                 <div class="form-floating mb-5">
-                  <input type="text" class="form-control" id="floatingInputname" v-model="form.first_name" placeholder="First Name">
+                  <input type="text" class="form-control" id="floatingInputname" v-model="form.first_name" placeholder="First Name" required>
                   <label for="floatingInputname">First Name</label>
                 </div>
                 
                 <div class="form-floating mb-5">
-                  <input type="text" class="form-control" id="floatingInputlast" v-model="form.last_name" placeholder="username">
+                  <input type="text" class="form-control" id="floatingInputlast" v-model="form.last_name" placeholder="username" required>
                   <label for="floatingInputlast">Last Name</label>
                 </div>
                 <div class="form-floating mb-5">
-                  <input type="text" class="form-control" id="floatingInputuser" v-model="form.username" placeholder="username">
+                  <input type="text" class="form-control" id="floatingInputuser" v-model="form.username" placeholder="username" required>
                   <label for="floatingInputuser">User Name</label>
                 </div>
                 <div class="form-floating mb-5">
-                  <input type="email" class="form-control" id="floatingInput" v-model="form.email" placeholder="name@example.com">
+                  <input type="email" class="form-control" id="floatingInput" v-model="form.email" placeholder="name@example.com" required>
                   <label for="floatingInput">Email address</label>
                 </div>
                 <div class="form-floating mb-5">
-                  <input type="password" class="form-control" id="floatingPassword" v-model="form.password" placeholder="Password">
+                  <input type="password" class="form-control" id="floatingPassword" v-model="form.password" placeholder="Password" required>
                   <label for="floatingPassword">Password</label>
                 </div>
                 <!-- forget and remeber section -->

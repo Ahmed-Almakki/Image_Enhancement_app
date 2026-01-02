@@ -28,7 +28,10 @@
                 </div>
                 <!-- SignIn-->
                 <div class="d-grid col-12 mb-5">
-                  <button class="btn btn-outline-primary btn-lg" type="submit">Sign In</button>
+                  <button class="btn btn-outline-primary btn-lg" type="submit">
+                    <span v-if="!submit">Sign In</span>
+                    <VueSpinnerIos v-else color="white" size="15" />
+                  </button>
                 </div>
               </form>
               <!-- Change this part -->
@@ -54,20 +57,27 @@
     </div>
 </template>
 <script>
+import { VueSpinnerIos } from 'vue3-spinners';
 export default {
+  components: {VueSpinnerIos},
   data() {
     return {
       cred: {email: null, password: null},
+      submit: false
     }
   },
   methods: {
     Login() {
+      this.submit = true
       this.$http.post('v1/login', this.cred).then((res) => {
         console.log('res this ', res.data)
         this.$store.dispatch('login', res.data.data)
         this.$router.push('/')
       })
-      .catch((e) => console.log('the error is ', e))
+      .catch((error) => {
+        this.$toast.error(`${error.response?.data?.message}`)
+        this.submit = false
+      })
     },
     Oauth() {
       this.$http.get('v2/state').then((res) => {
