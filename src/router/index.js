@@ -5,6 +5,7 @@ import RegisterPage from '@/views/RegisterPage.vue'
 import OAuthPage from '@/views/OAuthPage.vue'
 import ActivateAccount from '@/views/ActivateAccount.vue'
 import ActivatePage from '@/views/ActivatePage.vue'
+import store from '@/store'
 
 
 const routes = [
@@ -45,19 +46,15 @@ const router = createRouter({
   routes
 })
 router.beforeEach((routeTo, routeFrom, next) => {
-  const publicPages = ["/login", "/register", "/forgot-password", "/oauth", '/activate', '/activate-page'];
-  const authpage = !publicPages.includes(routeTo.path);
-  const loggeduser = localStorage.currentUser ? true : false;
-  console.log('didn fubd the ', loggeduser)
-  if (authpage && !loggeduser) 
-  if (authpage) {
-    // router.push("/login");
-  } 
-  else {
-    console.log("Hello");
-    next();
-  }
-  // console.log("first  ",publicPages, "\nrouteTo",routeTo.path, "\nrouteFrom",routeFrom.path, "\nrouteto",routeTo);
+  store.commit('SET_LOADING', true)
+  console.log(`before route the loader is now ${store.state.loading}`)
   next();
 });
+
+router.afterEach(() => {
+  setTimeout(() => {
+    store.commit('SET_LOADING', false)
+    console.log(`after route the loader is now ${store.state.loading}`)
+  }, 300)
+})
 export default router

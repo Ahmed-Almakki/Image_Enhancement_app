@@ -1,5 +1,6 @@
 <template>
-  <div class="back">
+  <LoaderComp v-if="loading" />
+  <div class="back" v-else>
     <div class="first d-flex justify-content-between align-items-center">
       <div class="logo ps-3 ">
         <h1>Enhanca-viosa</h1>
@@ -44,6 +45,9 @@ export default {
   computed: {
     currentUser() {
       return this.$store.state.currentUser
+    },
+    loading() {
+      return this.$store.state.loading
     }
   },
   methods: {

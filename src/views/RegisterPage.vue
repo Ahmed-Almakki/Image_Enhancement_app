@@ -1,5 +1,6 @@
 <template>
-    <div id="sect" class="d-flex flex-column justify-content-center align-items-center w-100 p-5">
+    <LoaderComp v-if="loading" /> 
+    <div v-else id="sect" class="d-flex flex-column justify-content-center align-items-center w-100 p-5">
         <div class="container-fluid w-25 border-2 p-4 text-center bg-danger rounded rounded-4">
           <div class="content mb-3">
             <div class="log_hdr text-center">
@@ -41,7 +42,10 @@
                 </div>
                 <!-- SignUp-->
                 <div class="d-grid col-12 mb-5">
-                  <button class="btn btn-outline-primary btn-lg" type="submit">Sign Up</button>
+                  <button class="btn btn-outline-primary btn-lg" type="submit">
+                    <span v-if="!submit">Sign Up</span>
+                    <VueSpinnerIos  v-else size="15" color="white" />
+                  </button>
                 </div>
               </form>
 
@@ -68,23 +72,35 @@
     </div>
 </template>
 <script>
+import { VueSpinnerIos } from 'vue3-spinners';
 export default {
+  components: {VueSpinnerIos},
   data() {
     return {
       form :{first_name: '', last_name: '', password: null,
         email: null, is_active: false, username: ''
-      }
+      },
+      submit: false,
     }
   },
   methods: {
     Register() {
+      this.submit = true
       this.$http.post('v1/register', this.form).then((res) => {
         console.log('register response', res.data)
         this.$router.push('/activate')
-      }).catch((error) => console.log('the error is because of the ', error))
+      }).catch((error) => {
+        console.log('the error is because of the ', error)
+        this.submit = false
+        this.$toast.error(`${error.response?.data?.message}`)
+      })
     }
   },
-    
+  computed: {
+    loading() {
+      return this.$store.state.loading
+    }
+  }
 }
 </script>
 <style>

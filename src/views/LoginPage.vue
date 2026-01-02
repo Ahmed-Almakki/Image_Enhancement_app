@@ -1,5 +1,6 @@
 <template>
-    <div id="sect" class="d-flex flex-column justify-content-center align-items-center h-100 w-100 p-5">
+  <LoaderComp v-if="loading" />
+    <div v-else id="sect" class="d-flex flex-column justify-content-center align-items-center h-100 w-100 p-5">
         <div class="container-fluid w-25 border border-2 p-5 text-center bg-body-secondary sect_card  rounded rounded-4">
           <div class="content mb-3">
             <div class="log_hdr text-center">
@@ -64,9 +65,9 @@ export default {
       this.$http.post('v1/login', this.cred).then((res) => {
         console.log('res this ', res.data)
         this.$store.dispatch('login', res.data.data)
+        this.$router.push('/')
       })
       .catch((e) => console.log('the error is ', e))
-      .finally(() => this.$router.push('/'))
     },
     Oauth() {
       this.$http.get('v2/state').then((res) => {
@@ -78,6 +79,11 @@ export default {
       this.$http.get('get_token/').then(() => {
         console.log('done done done')
       })
+    }
+  },
+  computed: {
+    loading() {
+      return this.$store.state.loading
     }
   },
   mounted() {
