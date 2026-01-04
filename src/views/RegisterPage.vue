@@ -30,16 +30,6 @@
                   <input type="password" class="form-control" id="floatingPassword" v-model="form.password" placeholder="Password" required>
                   <label for="floatingPassword">Password</label>
                 </div>
-                <!-- forget and remeber section -->
-                <div class="d-flex justify-content-between mb-5">
-                  <div class="form-check fs-5 pe-auto">
-                    <input class="form-check-input" type="checkbox" value="" id="checkDefault">
-                    <label class="form-check-label" for="checkDefault">
-                      Remeber Me
-                    </label>
-                  </div>
-                  <a href="#" class="text-decoration-none fs-5">Forget password?</a>
-                </div>
                 <!-- SignUp-->
                 <div class="d-grid col-12 mb-5">
                   <button class="btn btn-outline-primary btn-lg" type="submit">
@@ -78,7 +68,7 @@ export default {
   data() {
     return {
       form :{first_name: '', last_name: '', password: null,
-        email: null, is_active: false, username: ''
+        email: null, is_active: false, username: '',
       },
       submit: false,
     }
@@ -103,7 +93,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
  #sect {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     color: black;

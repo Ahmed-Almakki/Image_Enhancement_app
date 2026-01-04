@@ -19,12 +19,12 @@
                 <!-- forget and remeber section -->
                 <div class="d-flex justify-content-between mb-5">
                   <div class="form-check fs-5 pe-auto">
-                    <input class="form-check-input" type="checkbox" value="" id="checkDefault">
-                    <label class="form-check-label" for="checkDefault">
+                    <input class="form-check-input" type="checkbox" id="checkDefault" v-model="cred.rememberMe">
+                    <label class="form-check-label" for="checkDefault" >
                       Remeber Me
                     </label>
                   </div>
-                  <a href="#" class="text-decoration-none fs-5">Forget password?</a>
+                  <router-link to="/password-otp" class="text-decoration-none fs-5">Forget password?</router-link>
                 </div>
                 <!-- SignIn-->
                 <div class="d-grid col-12 mb-5">
@@ -62,7 +62,7 @@ export default {
   components: {VueSpinnerIos},
   data() {
     return {
-      cred: {email: null, password: null},
+      cred: {email: null, password: null, rememberMe: false},
       submit: false
     }
   },

@@ -2,7 +2,14 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
-    currentUser: localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser')) : null,
+    // currentUser: localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser')) : null,
+    currentUser: (() => {
+      const savedUser = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
+      if (savedUser && savedUser !== 'null' && savedUser !== 'undefined') {
+        return JSON.parse(savedUser);
+      }
+      return null;
+    })(),
     loading: true,
   },
   getters: {
@@ -12,7 +19,6 @@ export default createStore({
       state.currentUser = payload
     },
     REMOVE_CURRENT_USER(state) {
-      localStorage.removeItem('currentUser')
       state.currentUser = null
     },
     SET_LOADING(state, value) {
@@ -22,10 +28,16 @@ export default createStore({
   actions: {
     login(context, payload) {
       const currentUser = payload
-      localStorage.setItem('currentUser', JSON.stringify(currentUser))
+      if (currentUser.rememberMe) {
+        localStorage.setItem('currentUser', JSON.stringify(currentUser))
+      } else {
+        sessionStorage.setItem('currentUser', JSON.stringify(currentUser))
+      }
       context.commit('ADD_CURRENT_USER', currentUser)
     },
     logout(context) {
+      localStorage.removeItem('currentUser')
+      sessionStorage.removeItem('currentUser')
       context.commit('REMOVE_CURRENT_USER')
     }
   },

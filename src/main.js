@@ -16,10 +16,19 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap-icons/font/bootstrap-icons.css"
 import "bootstrap"
 
+// primeVue
+import PrimeVue from 'primevue/config';
+import Lara from '@primeuix/themes/lara'
+
 createApp(App)
     .use(store)
     .use(router)
     .use(http)
+    .use(PrimeVue, {
+    theme: {
+      preset: Lara
+    }
+  })
     .use(ToastPlugin, {
         position: 'top-right',
         duration: 5000,

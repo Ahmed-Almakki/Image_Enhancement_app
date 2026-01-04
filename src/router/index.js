@@ -6,6 +6,7 @@ import OAuthPage from '@/views/OAuthPage.vue'
 import ActivateAccount from '@/views/ActivateAccount.vue'
 import ActivatePage from '@/views/ActivatePage.vue'
 import store from '@/store'
+import ResetPasswordOTP from '@/views/ResetPasswordOTP.vue'
 
 
 const routes = [
@@ -38,7 +39,12 @@ const routes = [
     path: '/active-page',
     name: 'activatePage',
     component: ActivatePage,
-  }
+  },
+  {
+    path: '/password-otp',
+    name: 'ResetpasswordOtp',
+    component: ResetPasswordOTP,
+  },
 ]
 
 const router = createRouter({
