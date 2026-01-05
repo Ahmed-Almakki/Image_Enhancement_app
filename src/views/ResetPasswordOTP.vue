@@ -53,6 +53,14 @@ export default {
         loading() {
             return this.$store.state.loading
         }
+    },
+    methods: {
+        SubmitRest() {
+            this.otp = true
+            this.$http.post('reset_passowrd/', {email: this.email}).then((res) => {
+                console.log('inside the reset', res)
+            })
+        }
     }
 }
 </script>
