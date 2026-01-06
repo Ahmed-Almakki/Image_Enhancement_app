@@ -24,13 +24,24 @@
                         <p>Make sure to write the correct number and also you Wrote the correct email Address</p>
                     </div>
                     <div class="form-floating my-5 d-flex justify-content-center align-items-center gap-3 text-center border-2">
-                        <InputOtp size="large" v-model="value"/>
+                        <InputOtp size="large" v-model="otp_value"/>
                     </div>
                     <div class="w-100 mt-3">
-                        <button class="btn btn-primary w-75" type="submit">Submit</button>
+                        <button class="btn btn-primary w-75" type="submit">
+                            <span v-if="!isSubmitted">Submit</span>
+                            <VueSpinner v-else size="15" color="white" />
+                        </button>
                     </div>
                     <div class="mt-3">
-                        <p>Didn't recive the code? <span style="cursor: pointer; color: #000">Resend</span></p>
+                        <p>
+                            Didn't recive the code? 
+                            <span v-if="!timerEnable" style="cursor: pointer; color: #fff; font-weight: bold; text-decoration: underline" @click="resendPassword()">
+                                Resend
+                            </span>
+                            <span v-else style="color: #000">
+                                Resend Code in {{this.timerCounter}} s
+                            </span>
+                        </p>
                     </div>
                 </div>
             </form>
@@ -38,15 +49,41 @@
     </div>
 </template>
 <script>
+import { VueSpinner } from 'vue3-spinners';
 import InputOtp from 'primevue/inputotp';
 export default {
-    components: {InputOtp},
+    components: {InputOtp, VueSpinner},
     data() {
         return {
             email: null,
             otp: null,
             otpp: 6,
             inpts: [],
+            timerCounter: 60,
+            timerEnable: false,
+            otp_value: null,
+            isSubmitted: false,
+        }
+    },
+    watch: {
+        timerEnable(value) {
+            if (value) {
+                setTimeout(() =>{
+                    this.timerCounter--;
+                }, 1000)
+            }
+        },
+        timerCounter: {
+            handler(value) {
+                if (value > 0 && this.timerEnable) {
+                    setTimeout(() => {
+                        this.timerCounter--;
+                    }, 1000)
+                } else {
+                    this.timerEnable = false
+                    this.timerCounter = 60
+                }
+            }
         }
     },
     computed: {
@@ -59,6 +96,39 @@ export default {
             this.otp = true
             this.$http.post('reset_passowrd/', {email: this.email}).then((res) => {
                 console.log('inside the reset', res)
+            })
+        },
+        resendPassword() {
+            console.log('this email', this.email)
+            this.timerEnable = true
+            this.$http.post('resend_password/', {email: this.email}).then((res) => {
+                console.log('the resend is working', res)
+            })
+        },
+        startTimer() {
+            if (this.timerId) return;
+
+            this.timerEnable = true;
+            this.timerId = setInterval(() => {
+                if (this.timerCounter > 0) {
+                    this.timerCounter--;
+                } else {
+                    clearInterval(this.timerId);
+                    this.timerId = null;
+                    this.timerEnable = false;
+                    this.timerCounter = 60;
+                }
+            }, 1000);
+        }, 
+        Submitotp() {
+            console.log('the otp value is', this.otp_value, typeof this.otp_value)
+            this.isSubmitted = true
+            this.$http.post('check_otp/', {otp: this.otp_value}).then((res) => {
+                console.log('the res is ', res)
+            }).catch(() => {
+                this.$toast.error('Make Sure you write the correct code')
+                this.otp_value = null
+                this.isSubmitted = false
             })
         }
     }
