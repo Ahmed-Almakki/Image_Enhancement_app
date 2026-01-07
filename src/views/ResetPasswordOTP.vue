@@ -5,7 +5,7 @@
             
             <Transition :name="transitionName" mode="out-in">
                 
-                <form v-if="otp" @submit.prevent="SubmitRest()" key="email">
+                <form v-if="formStep === 'email'" @submit.prevent="SubmitRest()" key="email">
                     <div class="content mb-3 w-75 text-sm-center">
                         <div>
                             <h2>Forget Password</h2>
@@ -19,7 +19,7 @@
                     </div>
                 </form>
 
-                <form v-else @submit.prevent="Submitotp()" key="otp">
+                <form v-else-if="formStep === 'otp'" @submit.prevent="Submitotp()" key="otp">
                     <div class="content mb-3 w-75 text-sm-center">
                         <div>
                             <i class="bi bi-envelope-at" style="font-size: 4rem"></i>
@@ -48,6 +48,25 @@
                         </div>
                     </div>
                 </form>
+
+                <form v-else-if="formStep === 'confirm'" @submit.prevent="ConfirmResetPassword()" key="confirm">
+                    <div class="content mb-3 w-75 text-sm-center">
+                        <div>
+                            <h2>Reset Password</h2>
+                            <p>Create a new strong password for your account.</p>
+                        </div>
+                        <div class="form-floating mt-5">
+                            <input type="password" class="form-control" id="passInput" v-model="password" placeholder="Password" required>
+                            <label for="passInput">Password</label>
+                        </div>
+                         <div class="w-100 mt-3">
+                            <button class="btn btn-primary w-75" type="submit">
+                                <span>Confirm</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
             </Transition>
 
         </div>
@@ -62,16 +81,19 @@ export default {
     components: {InputOtp, VueSpinner},
     data() {
         return {
+            // STATE MANAGEMENT
+            formStep: 'email', // Options: 'email', 'otp', 'confirm'
+            transitionName: 'slide-email', // Controls direction
+
             email: null,
-            otp: true,
-            otpp: 6,
-            inpts: [],
+            password: null,
+            confirmPassword: null,
+            
+            otp_value: null,
             timerCounter: 60,
             timerEnable: false,
-            otp_value: null,
             isSubmitted: false,
-            // 1. Initialize transition direction (Starts with email animation)
-            transitionName: 'slide-email', 
+            token: null,
         }
     },
     watch: {
@@ -102,53 +124,54 @@ export default {
     },
     methods: {
         SubmitRest() {
-            // 2. Before switching to OTP, set animation to come from Left -> Right
+            // TRANSITION: Email -> OTP (Left to Right)
             this.transitionName = 'slide-otp';
-            this.otp = false
+            this.formStep = 'otp';
+            
             this.$http.post('reset_passowrd/', {email: this.email}).then((res) => {
                 console.log('inside the reset', res)
             })
         },
-        resendPassword() {
-            console.log('this email', this.email)
-            this.timerEnable = true
-            this.$http.post('resend_password/', {email: this.email}).then((res) => {
-                console.log('the resend is working', res)
-            })
-        },
-        startTimer() {
-            if (this.timerId) return;
-
-            this.timerEnable = true;
-            this.timerId = setInterval(() => {
-                if (this.timerCounter > 0) {
-                    this.timerCounter--;
-                } else {
-                    clearInterval(this.timerId);
-                    this.timerId = null;
-                    this.timerEnable = false;
-                    this.timerCounter = 60;
-                }
-            }, 1000);
-        }, 
         Submitotp() {
             this.isSubmitted = true
             this.$http.post('check_otp/', {otp: this.otp_value, email: this.email}).then((res) => {
                 if (res.data?.status == true) {
-                    this.$router.push('/login')
+                    // TRANSITION: OTP -> Confirm (Right to Left - Progressing forward)
+                    this.transitionName = 'slide-email'; 
+                    this.formStep = 'confirm';
+                    this.token = res.data?.data?.token
+                    console.log('the token is ', this.token, res.data)
                 }
             }).catch((error) => {
                 this.$toast.error(`${error.response?.data?.message}`)
                 this.otp_value = null
                 this.isSubmitted = false
+                
                 if (error.response?.data?.message == 'Too many attempt' || error.response?.data?.message == 'OTP expired') {
-                    // 3. If going BACK to Email form, set animation to come from Right -> Left
+                    // TRANSITION: Error -> Back to Email (Right to Left)
                     this.transitionName = 'slide-email';
                     this.email = null
-                    this.otp = true
+                    this.formStep = 'email';
                 }
             })
-        }
+        },
+        ConfirmResetPassword(){
+            this.$http.post('confirm_password/', {
+                token: this.token,
+                password: this.password
+            }).then((res) => {
+                console.log('Password reset successfully', res);
+                this.$router.push('/login');
+            }).catch(err => {
+                console.error(err);
+            });
+        },
+        resendPassword() {
+            this.timerEnable = true
+            this.$http.post('resend_password/', {email: this.email}).then((res) => {
+                console.log('the resend is working', res)
+            })
+        },
     }
 }
 </script>
@@ -159,7 +182,7 @@ export default {
     color: black;
     text-shadow: none;
     background-color: #214970;
-    overflow-x: hidden; /* Prevents scrollbar during slide */
+    overflow-x: hidden;
 }
 .container-password {
    width: 30%;
@@ -173,9 +196,8 @@ export default {
     font-size: 1.2rem;
 }
 
-/* --- TRANSITION STYLES --- */
+/* --- TRANSITIONS --- */
 
-/* 1. Base Transition Speed for both */
 .slide-email-enter-active,
 .slide-email-leave-active,
 .slide-otp-enter-active,
@@ -183,27 +205,23 @@ export default {
   transition: all 0.5s ease;
 }
 
-/* 2. EMAIL FORM: Right to Left */
-/* Starting state (before entering) */
+/* 1. RIGHT TO LEFT (Used for Email & Confirm) */
 .slide-email-enter-from {
   opacity: 0;
-  transform: translateX(50px); /* Starts 50px to the Right */
+  transform: translateX(50px);
 }
-/* Ending state (when leaving) */
 .slide-email-leave-to {
   opacity: 0;
-  transform: translateX(-50px); /* Leaves to the Left */
+  transform: translateX(-50px);
 }
 
-/* 3. OTP FORM: Left to Right */
-/* Starting state (before entering) */
+/* 2. LEFT TO RIGHT (Used for OTP) */
 .slide-otp-enter-from {
   opacity: 0;
-  transform: translateX(-50px); /* Starts 50px to the Left */
+  transform: translateX(-50px);
 }
-/* Ending state (when leaving) */
 .slide-otp-leave-to {
   opacity: 0;
-  transform: translateX(50px); /* Leaves to the Right */
+  transform: translateX(50px);
 }
 </style>
