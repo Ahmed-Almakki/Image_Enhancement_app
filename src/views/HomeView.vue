@@ -1,6 +1,6 @@
 <template>
-  <LoaderComp v-if="loading" />
-  <div class="back" v-else>
+  <LoaderComp v-if="loading || !imageLoading" />
+  <div class="back" v-else :style="{ backgroundImage: backgroundStyle }">
     <div class="first d-flex justify-content-between align-items-center">
       <div class="logo ps-3 ">
         <h1>Enhanca-viosa</h1>
@@ -32,14 +32,16 @@
     </div>
   </div>
 </template>
-
 <script>
+import heroImage from '@/assets/image.png'
 export default {
   name: 'HomeView',
   data(){
     return {
       file: null,
-      fileName: ""
+      fileName: "",
+      imageLoading: false,
+      heroImageSrc: heroImage,
     }
   },
   computed: {
@@ -48,6 +50,9 @@ export default {
     },
     loading() {
       return this.$store.state.loading
+    },
+    backgroundStyle() {
+      return `linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)), url(${this.heroImageSrc})`;
     }
   },
   methods: {
@@ -77,15 +82,25 @@ export default {
         this.$router.push('/')
       })
     }
-  }
+  },
+  mounted() {
+    const img = new Image()
+    img.src = this.heroImageSrc
+
+    img.onload = () => {
+      this.imageLoading = true
+    };
+
+    img.onerror = () => {
+      this.imageLoading = true
+    };
+  },
 }
 </script>
 <style scoped>
   .back {
     height: 100vh;
     width: 100%;
-    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
-    url('@/assets/image.png');
     position: relative;
     background-size: cover;
     background-position: center 20%;
