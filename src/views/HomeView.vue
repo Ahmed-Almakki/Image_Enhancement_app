@@ -73,6 +73,7 @@ export default {
 
       this.$Upload('v1/upload', {title: this.fileName, file: this.file}).then((res) => {
         console.log('response fromt dan', res)
+        this.$refs.fileInput.value = null
       })
     },
     Logout(){
