@@ -13,7 +13,7 @@
           </div>
         </div>
     </div>
-    <div class="second d-flex flex-column align-items-center">
+    <div v-if="!processImage" class="second d-flex flex-column align-items-center">
       <div>
         <p>
           Transform your ordinary images into stunning, high-resolution masterpieces with a single click.
@@ -27,21 +27,37 @@
       @change="handleFile"
     />
       <div>
-        <button @click="openFilePicker" type="button" class="btn btn-outline-warning btn-lg">Upload Image</button>
+        <button @click="openFilePicker" type="button" class="btn btn-outline-warning btn-lg"
+          >Upload Image</button>
       </div>
+    </div>
+    <div v-else class="second d-flex flex-column align-items-center gap-2">
+      <VueSpinner color="#FFD700" size="183"/>
+      <h2>{{ imageStatus }}...</h2>
+      <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus, voluptas?</span>
     </div>
   </div>
 </template>
 <script>
+import { VueSpinner } from 'vue3-spinners';
 import heroImage from '@/assets/image.png'
 export default {
   name: 'HomeView',
+  components:{ VueSpinner },
   data(){
     return {
       file: null,
       fileName: "",
       imageLoading: false,
       heroImageSrc: heroImage,
+      taskId: null,
+      processImage: false,
+      imageStatus: null,
+    }
+  },
+  watch: {
+    imageStatus() {
+      console.log('the status is',this.imageStatus)
     }
   },
   computed: {
@@ -59,7 +75,9 @@ export default {
     openFilePicker() {
       if(this.$store.state.currentUser) {
         this.$refs.fileInput.click()
+        console.log('inside the if part')
       } else {
+        console.log('inside the else part')
         this.$router.push('/login')
       }
     },
@@ -70,10 +88,16 @@ export default {
 
       this.file = file
       this.fileName = file.name
-
+      
       this.$Upload('v1/upload', {title: this.fileName, file: this.file}).then((res) => {
-        console.log('response fromt dan', res)
+        console.log('response fromt dan', res.data?.data)
+        this.taskId = res.data?.data
+        console.log('the task id', this.taskId)
         this.$refs.fileInput.value = null
+        this.processImage = true
+        this.$nextTick(() => {
+          this.checkImage()
+        })
       })
     },
     Logout(){
@@ -82,6 +106,25 @@ export default {
         console.log('successfully loged out', res.data)
         this.$router.push('/')
       })
+    },
+    checkImage() {
+      const send = new EventSource(`http://localhost:8000/api/v1/check-task/${this.taskId}`);
+      send.onmessage = (event) => {
+        if (event.data.startsWith("ERROR")) {
+          console.log('some eroror')
+          send.close()
+          return
+        }
+        const status = event.data.split('**')[0]
+        this.imageStatus = status
+        console.log('event good', status)
+
+        // stop excuting after finsih
+        if (status.split('.')[1] === 'png') {
+          this.processImage = false
+          send.close()
+        }
+      }
     }
   },
   mounted() {
